@@ -1,0 +1,322 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <!-- JS Library -->
+    <script src="/js/jquery.js"></script>
+    <script src="/css/bootstrap-4.4.1/js/bootstrap.min.js"></script>
+    <script  src="/js/echarts.js"></script>
+    <!-- BIMS JS -->
+    <script src="/js/bims_web_function.js"></script>
+    <!-- CSS Library-->
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap-4.4.1/css/bootstrap.css">
+    <link href="/css/fontawesome-free-5.11.2-web/css/all.css" rel="stylesheet">
+    <!-- BIMS CSS -->
+    <link rel="stylesheet" href="/css/bims.css">
+</head>
+<svg display="none">
+    <symbol id="factory-icon" viewBox="0 0 1024 1024" width="13vh" height="13vh">
+        <path
+            d="M788.3 392.8l95.5 40.8v151.1l7.2 7.7 54.3 57.7v237.5h55.7V630.1l-7.2-7.6-54.2-57.7V403.3l-14.1-7.7-137.2-60.2-281.1 85.5v458.3h281.1V392.8zM238.9 267.5c-18.4 4.6-36.3 9.1-53.7 13.4v80.4c17.4-3.3 35.3-6.7 53.7-10.1v-83.7z m503.2 141.2v66.8c-15.9 3-31.3 5.9-46.3 8.7v-63.9c15-3.7 30.5-7.6 46.3-11.6zM579.4 623.9v56.7h-33.8V626c11-0.7 22.3-1.4 33.8-2.1z m75.1-4.6v61.3h-39.4v-58.9c12.8-0.8 25.9-1.6 39.4-2.4z m87.6-5.4v66.7h-46.3v-63.8c15-0.9 30.5-1.9 46.3-2.9z m-162.7-77.2v56.7c-11.5 1.1-22.8 2.2-33.8 3.2v-54.7c11-1.6 22.3-3.4 33.8-5.2z m75.1-11.7v61.3c-13.5 1.2-26.6 2.5-39.4 3.7v-58.9c12.8-1.9 25.9-4 39.4-6.1z m87.6-13.6v66.7c-15.9 1.5-31.3 3-46.3 4.4v-63.9c15-2.3 30.5-4.7 46.3-7.2z m-162.7-62v56.7c-11.5 2.2-22.8 4.3-33.8 6.3v-54.7c11.1-2.6 22.3-5.4 33.8-8.3z m75.1-18.7V492c-13.5 2.5-26.6 5-39.4 7.4v-59c12.8-3.1 25.9-6.4 39.4-9.7z m-296-193.1c-21.7 5.4-42.8 10.7-63.2 15.8v87.1c20.5-3.8 41.6-7.8 63.2-11.9v-91zM136.6 531c-15.8 1-31.1 1.9-46.1 2.8v74.5h46.1c-0.1-25.7-0.1-51.5 0-77.3z m102.3-6.3c-18.4 1.1-36.3 2.2-53.7 3.3v80.3h53.7v-83.6z m119.6-7.3c-21.7 1.3-42.8 2.7-63.2 3.9v87h63.2v-90.9zM136.6 412.1c-15.7 2.4-31.1 4.8-46.1 7.2v74.5c15-1.4 30.4-2.8 46.1-4.3v-77.4z m102.3-15.9c-18.4 2.9-36.3 5.6-53.7 8.4v80.3c17.4-1.6 35.3-3.3 53.7-5.1v-83.6z m119.6-18.6c-21.1 3.3-42.2 6.5-63.2 9.8v87.1c20.5-1.9 41.6-3.9 63.2-6v-90.9zM136.6 293c-15.7 3.9-31.1 7.8-46.1 11.5v74.6c15.1-2.8 30.4-5.7 46.1-8.7V293z m284.7-155.5l182.2 90.4 14.1 7.7V372h-55.7V265.9l-140.5-69.2v682.4H38v-625l383.3-116.6z"
+            p-id="20361"></path>
+    </symbol>
+</svg>
+
+<script crossorigin="anonymous">
+    function init() {
+        setGaugeRangeColor();
+        BarChart();
+        getDPM();//Sherlock add
+        for (let index = 1; index < 10; index++) {
+            Gaugechart(index.toString());
+        }
+        setInterval(function () {
+            $("#now-time").html(new Date().toString().replace(/^\S+\s(\S+\s\S+\s)(\S+\s)(\S+)\s.*$/, "$2$1$3"));
+        }, 1000);
+
+
+        $.ajax({
+            data: {},
+            url: 'http://10.129.158.63:3000/api/getvelocity?agvno=01',
+            dataType: 'json',
+            timeout: 4000,
+            success: function (data) {
+                console.log(JSON.stringify(data));
+
+            },
+            error: function (jqXHR, textStatus, errorThrown) {}
+        });
+    }
+</script>
+
+<body onload="init()">
+    <div class="row">
+        <div class="col-md-12">
+            <div id="" class="el-card0" style="height:100vh;">
+                <div>
+                    <h3>BIMS</h3>
+                    <h5 id="now-time"
+                        style="color: yellow;margin-top:-26px;margin-right:15px;float:right;background:none;">
+                    </h5>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div id="" style="margin-left: 15px;margin-right: -5px; ">
+                            <div id="" class="el-card0" style="height:41vh">
+                                <div class="windowhead">
+                                    廠區圖
+                                </div>
+                                <div>
+                                    <div class="row" style="margin-left: 5px;margin-right: -5px; margin-top:15px;">
+                                        <div class="col-md-4">
+                                            <div class="row">
+                                                <div class="col-md-12 change-children-color active"
+                                                    style="min-height:50%;margin:auto;">
+                                                    <svg class="factory-icon ">
+                                                        <use xlink:href="#factory-icon" />
+                                                    </svg>
+                                                    <div class="factory-name">一廠</div>
+                                                </div>
+                                                <div class="col-md-12 change-children-color" style="height:50%">
+                                                    <svg class="factory-icon">
+                                                        <use xlink:href="#factory-icon" />
+                                                    </svg>
+                                                    <div class="factory-name">成都</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="row">
+                                                <div class="col-md-12 change-children-color">
+                                                    <svg class="factory-icon">
+                                                        <use xlink:href="#factory-icon" />
+                                                    </svg>
+                                                    <div class="factory-name">二廠</div>
+                                                </div>
+                                                <div class="col-md-12 change-children-color">
+                                                    <svg class="factory-icon">
+                                                        <use xlink:href="#factory-icon" />
+                                                    </svg>
+                                                    <div class="factory-name">重慶</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="row">
+                                                <div class="col-md-12 change-children-color">
+                                                    <svg class="factory-icon">
+                                                        <use xlink:href="#factory-icon" />
+                                                    </svg>
+                                                    <div class="factory-name">三廠</div>
+                                                </div>
+                                                <div class="col-md-12 change-children-color">
+                                                    <svg class="factory-icon">
+                                                        <use xlink:href="#factory-icon" />
+                                                    </svg>
+                                                    <div class="factory-name">四廠</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="" style="height:2vh"></div>
+                        <div id="" style="margin-left: 15px;margin-right: -5px; ">
+                            <div id="" class="el-card0" style="height:50vh">
+                                <div class="windowhead">
+                                    指標統計圖
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <div id="bar-chart" style="height: 46vh;width: 100%">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2" id="bar-list" style="margin-left: -35px;margin-top: 5px;">
+                                        <input type='radio' id='radio0-1' name="bar-list-radio" value='bar-day'
+                                            onclick="" checked checked checked />
+                                        <label for='radio0-1' class='bar-label'>當日</label>
+                                        <input type='radio' id='radio0-2' name="bar-list-radio" value='bar-week'
+                                            onclick="" />
+                                        <label for='radio0-2' class='bar-label'>當周</label>
+                                        <input type='radio' id='radio0-3' name="bar-list-radio" value='bar-month'
+                                            onclick="" />
+                                        <label for='radio0-3' class='bar-label'>當月</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div id="" style="margin-right: 15px;margin-left: -5px; ">
+                            <div id="" class="el-card0" style="height:93vh">
+                                <div class="windowhead">
+                                    <span>實時監控圖</span>
+                                    <div id="buttonlist" style="float: right;margin-right: 6px;margin-top: 0px">
+                                        <input type='radio' id='radio1-1' name="radio" value='Plant2' onclick=""
+                                            checked />
+                                        <label for='radio1-1'>二廠</label>
+                                        <input type='radio' id='radio1-2' name="radio" value='Plant3' onclick="" />
+                                        <label for='radio1-2'>三廠</label>
+                                        <input type='radio' id='radio1-3' name="radio" value='Plant4' onclick="" />
+                                        <label for='radio1-3'>四廠</label>
+                                        <input type='radio' id='radio1-4' name="radio" value='PlantCQ' onclick="" />
+                                        <label for='radio1-4'>重慶</label>
+                                        <input type='radio' id='radio1-5' name="radio" value='PlantCD' onclick="" />
+                                        <label for='radio1-5'>成都</label>
+                                    </div>
+                                </div>
+                                <div id="" class="row" style="width: 100%">
+                                    <div class="col-md-2  justify-content-center align-items-center">
+                                        <h4>Key指標</h4>
+                                    </div>
+                                    <div class="col-md-1  justify-content-center align-items-center">
+                                        <h4>值</h4>
+                                    </div>
+                                    <div class="col-md-9  justify-content-center align-items-center">
+                                        <div class="btn-group btn-group-sm" role="group" aria-label=""
+                                            style="margin-left: 25vh;margin-top: 3px">
+                                            <p style="color:white;"><i id="" class="fa fa-circle"
+                                                    style="color:green;"></i>Perfect&nbsp;&nbsp;</p>
+                                            <p style="color:white;"><i id="" class="fa fa-circle"
+                                                    style="color:yellow;"></i>Normal&nbsp;&nbsp;</p>
+                                            <p style="color:white;"><i id="" class="fa fa-circle"
+                                                    style="color:red;"></i>To
+                                                be Improve&nbsp;&nbsp;</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div id="" class="" style="height:27vh;max-height:33%">
+                                        <div class="row" style="margin-right: 15px;margin-left: -5px; ">
+                                            <div
+                                                class="col-md-2 d-flex flex-column justify-content-center align-items-center">
+                                                <h4>Port</h4>
+                                            </div>
+                                            <div
+                                                class="col-md-1 d-flex flex-column justify-content-center align-items-center">
+                                                <h4 style="color:yellow;">2000</h4>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div id="gauge1" style="height: 22vh">
+                                                </div>
+                                                <div
+                                                    class="d-flex flex-column justify-content-center align-items-center">
+                                                    <h5><i id="gauge1-light" class="fa fa-circle"
+                                                            style="color:green;"></i>良品率</h5>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div id="gauge2" style="height: 22vh">
+                                                </div>
+                                                <div
+                                                    class="d-flex flex-column justify-content-center align-items-center">
+                                                    <h5><i id="gauge2-light" class="fa fa-circle"
+                                                            style="color:green;"></i>利用率</h5>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div id="gauge3" style="height: 22vh">
+                                                </div>
+                                                <div
+                                                    class="d-flex flex-column justify-content-center align-items-center">
+                                                    <h5><i id="gauge3-light" class="fa fa-circle"
+                                                            style="color:green;"></i>Re-BRP率
+                                                    </h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div id="" class="" style="height:27vh;max-height:33%">
+                                        <div class="row" style="margin-right: 15px;margin-left: -5px; ">
+                                            <div
+                                                class="col-md-2 d-flex flex-column justify-content-center align-items-center">
+                                                <h4>Cycle Time</h4>
+                                            </div>
+                                            <div
+                                                class="col-md-1 d-flex flex-column justify-content-center align-items-center">
+
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div id="gauge4" style="height: 22vh">
+                                                </div>
+                                                <div
+                                                    class="d-flex flex-column justify-content-center align-items-center">
+                                                    <h5><i id="gauge4-light" class="fa fa-circle"
+                                                            style="color:green;"></i>當天達成率
+                                                    </h5>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div id="gauge5" style="height: 22vh">
+                                                </div>
+                                                <div
+                                                    class="d-flex flex-column justify-content-center align-items-center">
+                                                    <h5><i id="gauge5-light" class="fa fa-circle"
+                                                            style="color:green;"></i>周達成率</h5>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div id="gauge6" style="height: 22vh">
+                                                </div>
+                                                <div
+                                                    class="d-flex flex-column justify-content-center align-items-center">
+                                                    <h5><i id="gauge6-light" class="fa fa-circle"
+                                                            style="color:green;"></i>月達成率</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div id="" class="" style="height:28vh;max-height:33%">
+                                        <div class="row" style="margin-right: 15px;margin-left: -5px; ">
+                                            <div
+                                                class="col-md-2 d-flex flex-column justify-content-center align-items-center">
+                                                <h4>良率</h4>
+                                            </div>
+                                            <div
+                                                class="col-md-1 d-flex flex-column justify-content-center align-items-center">
+
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div id="gauge7" style="height: 22vh">
+                                                </div>
+                                                <div
+                                                    class="d-flex flex-column justify-content-center align-items-center">
+                                                    <h5><i id="gauge7-light" class="fa fa-circle"
+                                                            style="color:green;"></i>當天良率</h5>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div id="gauge8" style="height: 22vh">
+                                                </div>
+                                                <div
+                                                    class="d-flex flex-column justify-content-center align-items-center">
+                                                    <h5><i id="gauge8-light" class="fa fa-circle"
+                                                            style="color:green;"></i>周良率</h5>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div id="gauge9" style="height: 22vh">
+                                                </div>
+                                                <div
+                                                    class="d-flex flex-column justify-content-center align-items-center">
+                                                    <h5><i id="gauge9-light" class="fa fa-circle"
+                                                            style="color:green;"></i>月良率</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
